@@ -1,0 +1,180 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					}
+				],
+				"name": "buyCopyright",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					}
+				],
+				"name": "cancelSale",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					}
+				],
+				"name": "checkCopyright",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "copyrightedTerm",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "currentHolderAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "creationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expirationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "forSale",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "specificBuyer",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "sellCopyright",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "specificBuyer",
+						"type": "address"
+					}
+				],
+				"name": "sellCopyrightToAddress",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Possibilita a compra e expiração de patentes",
+			"kind": "dev",
+			"methods": {},
+			"title": "Patente",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Patente/src/contracts/Patente.sol": "Copyright"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Patente/src/contracts/Patente.sol": {
+			"keccak256": "0x5681129ea1fef76e749449abf06f7da66a76c91cbe5702a2e55118b8047e1668",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://cef479cffe9b0613a369783396c20d6e9c6bba7c252ea1c21dec85b01d9d24f1",
+				"dweb:/ipfs/QmbVeWmgZXeqB4bnu7jy8wb4EouEbcBUwYPVmcKwEtF3zJ"
+			]
+		},
+		"Patente/src/utils/FormatConverter.sol": {
+			"keccak256": "0x9a114c25c7e35f12a8c3a1040cecb93b7ddbf73e89f2e3af76b24e45f68eb4e0",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://94eb57895509e5625835dd56dd7ccd465236d1aa9aa6e9ad2a47eba68a615bc0",
+				"dweb:/ipfs/QmPzWHM1KxFVCvK7SHh8k3BMWuSSF58V5PHRMhd55vXwNT"
+			]
+		},
+		"Patente/src/utils/StringAppender.sol": {
+			"keccak256": "0x7c73f67c8c94ff3073bed5c5d74d102bb560e9676838f607844c32d09c61c598",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://e84dc383ec9c3bbe40556c730479bb4ef4fb45aa1cc2b1323e1f3e15266a0670",
+				"dweb:/ipfs/QmcLuMJFgXYzbgYehRE5mfKXguU5pqC6MUutqYZ8tYsAAi"
+			]
+		}
+	},
+	"version": 1
+}
