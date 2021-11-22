@@ -18,7 +18,7 @@ contract Copyright {
     struct CopyrightStatus {
         string copyrightedTerm;
         CopyrightHolder currentHolder;
-        CopyrightHolder[] pastHolders;
+        CopyrightHolder[] previousHolders;
         bool forSale;
         uint256 price;
         address specificBuyer;
@@ -47,7 +47,7 @@ contract Copyright {
                 
                 copyrights[term].currentHolder.wasSold = true;
             }
-            copyrights[term].pastHolders.push(copyrights[term].currentHolder);
+            copyrights[term].previousHolders.push(copyrights[term].currentHolder);
         } else {
             require(msg.value == 10 ether, "It costs 10 Ether to buy a new copyright!");
         }
@@ -96,6 +96,28 @@ contract Copyright {
         forSale = copyrights[term].forSale;
         price = copyrights[term].price;
         specificBuyer = copyrights[term].specificBuyer;
+    }
+    
+    function numberOfPreviousHolders(string memory term) public view returns (uint256 previousHolders) {
+        require(bytes(copyrights[term].copyrightedTerm).length > 0, "This copyright has no holder yet!");
+        previousHolders = copyrights[term].previousHolders.length;
+    }
+    
+    function getCurrentHolder(string memory term) public view returns (address holder, uint256 creationDate, uint256 expirationDate, bool wasSold) {
+        require(bytes(copyrights[term].copyrightedTerm).length > 0, "This copyright has no holder yet!");
+        holder = copyrights[term].currentHolder.holder;
+        creationDate = copyrights[term].currentHolder.creationDate;
+        expirationDate = copyrights[term].currentHolder.expirationDate;
+        wasSold = copyrights[term].currentHolder.wasSold;
+    }
+    
+    function getPreviousHolder(string memory term, uint256 holderIndex) public view returns (address previousHolder, uint256 creationDate, uint256 expirationDate, bool wasSold) {
+        require(bytes(copyrights[term].copyrightedTerm).length > 0, "This copyright has no holder yet!");
+        require(holderIndex < copyrights[term].previousHolders.length, "There's no previous holder with this index!");
+        previousHolder = copyrights[term].previousHolders[holderIndex].holder;
+        creationDate = copyrights[term].previousHolders[holderIndex].creationDate;
+        expirationDate = copyrights[term].previousHolders[holderIndex].expirationDate;
+        wasSold = copyrights[term].previousHolders[holderIndex].wasSold;
     }
 }
 
