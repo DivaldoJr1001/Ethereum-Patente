@@ -26,7 +26,7 @@ contract Copyright {
     
     mapping(string => CopyrightStatus) private copyrights;
     
-    function buyCopyright(string memory term) public payable {
+    function buyCopyright(string memory term, uint256 durationDays) public payable {
         address claimer = msg.sender;
 
         require(bytes(term).length > 0, "You must search a term!");
@@ -49,11 +49,11 @@ contract Copyright {
             }
             copyrights[term].previousHolders.push(copyrights[term].currentHolder);
         } else {
-            require(msg.value == 10 ether, "It costs 10 Ether to buy a new copyright!");
+            require(msg.value == durationDays * 10**18, append3("It costs 1 Ether per day to buy a new copyright! (Current Price: ", uint2str(durationDays), " Ether)"));
         }
         
         // Copyright lasts 600 seconds
-        copyrights[term].currentHolder = CopyrightHolder(claimer, block.timestamp, block.timestamp + (600), false);
+        copyrights[term].currentHolder = CopyrightHolder(claimer, block.timestamp, block.timestamp + (durationDays * 86400), false);
         
         // If the copyright was bought, resets the selling properties
         cancelSale(term);

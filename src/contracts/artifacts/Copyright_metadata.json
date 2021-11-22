@@ -11,6 +11,11 @@
 						"internalType": "string",
 						"name": "term",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "durationDays",
+						"type": "uint256"
 					}
 				],
 				"name": "buyCopyright",
@@ -86,6 +91,98 @@
 						"internalType": "string",
 						"name": "term",
 						"type": "string"
+					}
+				],
+				"name": "getCurrentHolder",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "creationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expirationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "wasSold",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "holderIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "getPreviousHolder",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "previousHolder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "creationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expirationDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "wasSold",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
+					}
+				],
+				"name": "numberOfPreviousHolders",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "previousHolders",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "term",
+						"type": "string"
 					},
 					{
 						"internalType": "uint256",
@@ -137,7 +234,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Patente/src/contracts/Patente.sol": "Copyright"
+			"Ethereum-Patente/src/contracts/Patente.sol": "Copyright"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -151,15 +248,15 @@
 		"remappings": []
 	},
 	"sources": {
-		"Patente/src/contracts/Patente.sol": {
-			"keccak256": "0x5681129ea1fef76e749449abf06f7da66a76c91cbe5702a2e55118b8047e1668",
+		"Ethereum-Patente/src/contracts/Patente.sol": {
+			"keccak256": "0x36e111af065dd4535982d2c59f4261e1f21684f4cfe78f73dc75980f2da9d63b",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://cef479cffe9b0613a369783396c20d6e9c6bba7c252ea1c21dec85b01d9d24f1",
-				"dweb:/ipfs/QmbVeWmgZXeqB4bnu7jy8wb4EouEbcBUwYPVmcKwEtF3zJ"
+				"bzz-raw://b9549a89ca5505334711606f6c428c7ccfe5654bad248d9b1e895d3b1d305916",
+				"dweb:/ipfs/QmWZyx1DZsnqKrDAFLdZTTwvEBVgeKsDKGzyPAy6zBkEQc"
 			]
 		},
-		"Patente/src/utils/FormatConverter.sol": {
+		"Ethereum-Patente/src/utils/FormatConverter.sol": {
 			"keccak256": "0x9a114c25c7e35f12a8c3a1040cecb93b7ddbf73e89f2e3af76b24e45f68eb4e0",
 			"license": "GPL-3.0",
 			"urls": [
@@ -167,7 +264,7 @@
 				"dweb:/ipfs/QmPzWHM1KxFVCvK7SHh8k3BMWuSSF58V5PHRMhd55vXwNT"
 			]
 		},
-		"Patente/src/utils/StringAppender.sol": {
+		"Ethereum-Patente/src/utils/StringAppender.sol": {
 			"keccak256": "0x7c73f67c8c94ff3073bed5c5d74d102bb560e9676838f607844c32d09c61c598",
 			"license": "GPL-3.0",
 			"urls": [
