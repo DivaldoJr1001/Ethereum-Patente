@@ -9,6 +9,7 @@ pragma solidity >=0.7.0 <0.9.0;
 contract Copyright {
 
     struct CopyrightHolder {
+        string copyrightedTerm;
         address holder;
         uint256 creationDate;
         uint256 expirationDate;
@@ -25,14 +26,13 @@ contract Copyright {
     }
 
     mapping(string => CopyrightStatus) private copyrights;
-    mapping(address => string[]) private holders;
+    mapping(address => CopyrightHolder[]) private holders;
 
     function buyCopyright(string memory term, uint256 durationSeconds) public payable {
-        updateCopyrights(msg.sender);
         address claimer = msg.sender;
 
         require(bytes(term).length > 0, "You must search a term!");
-        require(durationSeconds > 0, "You must choose the duration of the copyright in seconds!");
+        require(durationSeconds > 60, "The minimum duration of a newly bought copyright is 60 seconds!");
         require(!isCurrentOwner(term, msg.sender), "You already own this copyright!");
 
         copyrights[term].copyrightedTerm = term;
@@ -50,24 +50,34 @@ contract Copyright {
                 require(msg.value == (copyrights[term].price + durationSeconds) * 10**18, append5("This copyright is being sold for ", uint2str(copyrights[term].price), " Ether on top of the fee of 1 Ether per second! (Current Price: ", uint2str(copyrights[term].price + durationSeconds), " Ether)"));
 
                 copyrights[term].currentHolder.wasSold = true;
+
+                address payable addr = payable(copyrights[term].currentHolder.holder);
+
+                addr.transfer(copyrights[term].price * 10**18);
+
+                for (uint256 i = 0; i < holders[copyrights[term].currentHolder.holder].length; i++) {
+                    string memory currentTerm = holders[copyrights[term].currentHolder.holder][i].copyrightedTerm;
+                    if (keccak256(bytes(currentTerm)) == keccak256(bytes(term))) {
+                        holders[copyrights[term].currentHolder.holder][i].wasSold = true;
+                        break;
+                    }
+                }
             }
-            updateCopyrights(copyrights[term].currentHolder.holder);
             copyrights[term].previousHolders.push(copyrights[term].currentHolder);
+            copyrights[term].forSale = false;
+            copyrights[term].price = 0;
+            copyrights[term].specificBuyer = address(0);
         } else {
             require(msg.value == (durationSeconds * 10**18), append3("It costs 1 Ether per second to buy a new copyright! (Current Price: ", uint2str(durationSeconds), " Ether)"));
         }
 
-        copyrights[term].currentHolder = CopyrightHolder(claimer, block.timestamp, block.timestamp + (durationSeconds), false);
-        holders[msg.sender].push(term);
+        CopyrightHolder memory newHolder = CopyrightHolder(term, claimer, block.timestamp, block.timestamp + (durationSeconds), false);
 
-        // If the copyright was bought, resets the sale properties
-        if (copyrights[term].forSale) {
-            cancelSale(term);
-        }
+        copyrights[term].currentHolder = newHolder;
+        holders[msg.sender].push(newHolder);
     }
 
     function extendCopyright(string memory term, uint256 durationSeconds) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(durationSeconds > 0, "You must choose the additional duration of the copyright in seconds!");
         require(msg.value ==  (durationSeconds * 10**18), append3("Each additional second owning a copyright costs 1 Ether! (Current Price: ", uint2str(durationSeconds), " Ether)"));
@@ -76,7 +86,6 @@ contract Copyright {
     }
 
     function sellCopyright(string memory term, uint256 price) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == false, "This copyright is already up for sale!");
         require(msg.value == 50 ether, "It costs 50 Ether to set up a copyright sale!");
@@ -87,10 +96,9 @@ contract Copyright {
     }
 
     function sellCopyrightToAddress(string memory term, uint256 price, address specificBuyer) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == false, "This copyright is already up for sale!");
-        require(msg.value == 60 ether, "It costs 60 Ether to set up a copyright sale for a specific address!");
+        require(msg.value == 50 ether, "It costs 50 Ether to set up a copyright sale!");
 
         copyrights[term].forSale = true;
         copyrights[term].price = price;
@@ -98,7 +106,6 @@ contract Copyright {
     }
 
     function changeTargetBuyer(string memory term, address specificBuyer) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == true, "This copyright isn't for sale!");
         require(msg.value == 10 ether, "It costs 10 Ether to define a buyer address!");
@@ -107,7 +114,6 @@ contract Copyright {
     }
 
     function makeSalePublic(string memory term) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == true, "This copyright isn't for sale!");
         require(copyrights[term].specificBuyer == address(0), "This sale is already public!");
@@ -117,7 +123,6 @@ contract Copyright {
     }
 
     function changeSalePrice(string memory term, uint256 newPrice) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == true, "This copyright isn't for sale!");
         require(msg.value == 5 ether, "It costs 5 Ether to change the copyright's sale price!");
@@ -126,7 +131,6 @@ contract Copyright {
     }
 
     function cancelSale(string memory term) public payable {
-        updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(msg.value == 10 ether, "It costs 10 Ether to cancel a copyright sale!");
         copyrights[term].forSale = false;
@@ -149,7 +153,7 @@ contract Copyright {
         previousHolders = copyrights[term].previousHolders;
     }
 
-    function getAllOwnedCopyrights(address ownerAddress) public view returns (string[] memory currentOwnedTerms) {
+    function getAddressCopyrights(address ownerAddress) public view returns (CopyrightHolder[] memory currentOwnedTerms) {
         currentOwnedTerms = holders[ownerAddress];
     }
 
@@ -159,31 +163,6 @@ contract Copyright {
 
     function isCurrentOwner(string memory term, address senderAddress) private view returns (bool isOwner) {
         isOwner = copyrights[term].currentHolder.holder == senderAddress && !isExpired(term);
-    }
-
-    function updateCopyrights(address ownerAddress) public payable {
-        uint256 amountExpired = 0;
-
-        for(uint i = 0; i < holders[ownerAddress].length; i++){
-            if(!isCurrentOwner(holders[ownerAddress][i], ownerAddress)){
-                amountExpired++;
-            }
-        }
-
-        uint256 newArrayLength = holders[ownerAddress].length - amountExpired;
-
-        string[] memory currentOwnedTerms = new string[](newArrayLength);
-
-        uint256 currentIndex = 0;
-        
-        for(uint i = 0; i < holders[ownerAddress].length; i++){
-            if(isCurrentOwner(holders[ownerAddress][i], ownerAddress)){
-                currentOwnedTerms[currentIndex] = holders[ownerAddress][i];
-                currentIndex++;
-            }
-        }
-
-        holders[ownerAddress] = currentOwnedTerms;
     }
 }
 
