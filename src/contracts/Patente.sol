@@ -47,7 +47,7 @@ contract Copyright {
                     require(copyrights[term].specificBuyer == msg.sender, "The copyright is for sale, but it has been reserved for another address!");
                 }
 
-                require(msg.value == copyrights[term].price, append3("This copyright is being sold for ", uint2str(copyrights[term].price), " Ether!"));
+                require(msg.value == (copyrights[term].price + durationSeconds) * 10**18, append5("This copyright is being sold for ", uint2str(copyrights[term].price), " Ether on top of the fee of 1 Ether per second! (Current Price: ", uint2str(copyrights[term].price + durationSeconds), " Ether)"));
 
                 copyrights[term].currentHolder.wasSold = true;
             }
@@ -79,7 +79,7 @@ contract Copyright {
         updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == false, "This copyright is already up for sale!");
-        require(msg.value >= 50 ether, "It costs at least 50 Ether to set up a copyright sale!");
+        require(msg.value == 50 ether, "It costs 50 Ether to set up a copyright sale!");
 
         copyrights[term].forSale = true;
         copyrights[term].price = price;
@@ -90,7 +90,7 @@ contract Copyright {
         updateCopyrights(msg.sender);
         require(isCurrentOwner(term, msg.sender), "You're not the current holder of this copyright!");
         require(copyrights[term].forSale == false, "This copyright is already up for sale!");
-        require(msg.value >= 60 ether, "It costs at least 60 Ether to set up a copyright sale for a specific address!");
+        require(msg.value == 60 ether, "It costs 60 Ether to set up a copyright sale for a specific address!");
 
         copyrights[term].forSale = true;
         copyrights[term].price = price;
